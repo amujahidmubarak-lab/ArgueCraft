@@ -13,6 +13,32 @@
     </a>
 </div>
 
+<!-- Filter Bar -->
+<div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm mb-8">
+    <form action="{{ route('admin.topics.index') }}" method="GET" class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul topik..." class="w-full px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 focus:border-primary-red outline-none text-sm font-medium">
+        </div>
+        <div class="w-full md:w-48">
+            <select name="difficulty" class="w-full px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 focus:border-primary-red outline-none text-sm font-medium">
+                <option value="">Semua Kesulitan</option>
+                <option value="easy" {{ request('difficulty') == 'easy' ? 'selected' : '' }}>Easy</option>
+                <option value="medium" {{ request('difficulty') == 'medium' ? 'selected' : '' }}>Medium</option>
+                <option value="hard" {{ request('difficulty') == 'hard' ? 'selected' : '' }}>Hard</option>
+            </select>
+        </div>
+        <div class="w-full md:w-48">
+            <select name="status" class="w-full px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 focus:border-primary-red outline-none text-sm font-medium">
+                <option value="">Semua Status</option>
+                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Aktif</option>
+                <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Non-Aktif</option>
+            </select>
+        </div>
+        <button type="submit" class="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-primary-red transition-all text-sm">Filter</button>
+        <a href="{{ route('admin.topics.index') }}" class="px-8 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-all text-sm text-center">Reset</a>
+    </form>
+</div>
+
 <div class="grid lg:grid-cols-3 gap-6">
     @foreach($topics as $topic)
         <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col relative group hover:border-red-200 transition-colors">

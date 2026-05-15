@@ -18,9 +18,8 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/statistik', [\App\Http\Controllers\DashboardController::class, 'stats'])->name('dashboard.stats');
     
     Route::get('/pembelajaran', [LearningController::class, 'index'])->name('learning.index');
     Route::get('/pembelajaran/{module}', [LearningController::class, 'show'])->name('learning.show');
@@ -33,10 +32,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/simulasi/result', [SimulationController::class, 'result'])->name('simulation.result');
 
     // NEW: Interactive Simulation (Chat Style)
-    Route::get('/simulasi-interaktif', [SimulationController::class, 'interactiveSetup'])->name('simulation.interactive.setup');
-    Route::post('/simulasi-interaktif/start', [SimulationController::class, 'interactiveStart'])->name('simulation.interactive.start');
-    Route::get('/simulasi-interaktif/chat', [SimulationController::class, 'interactiveChat'])->name('simulation.interactive.chat');
-    Route::post('/simulasi-interaktif/chat', [SimulationController::class, 'interactiveSubmit'])->name('simulation.interactive.submit');
+    Route::get('/simulasi-interaktif', [\App\Http\Controllers\InteractiveSimulationController::class, 'setup'])->name('simulation.interactive.setup');
+    Route::post('/simulasi-interaktif/start', [\App\Http\Controllers\InteractiveSimulationController::class, 'start'])->name('simulation.interactive.start');
+    Route::get('/simulasi-interaktif/chat/{session_id}', [\App\Http\Controllers\InteractiveSimulationController::class, 'chat'])->name('simulation.interactive.chat');
+    Route::post('/simulasi-interaktif/chat/{session_id}', [\App\Http\Controllers\InteractiveSimulationController::class, 'submit'])->name('simulation.interactive.submit');
+    Route::get('/simulasi-interaktif/result/{session_id}', [\App\Http\Controllers\InteractiveSimulationController::class, 'result'])->name('simulation.interactive.result');
+
+    // EXPORT ROUTES
+    Route::get('/export/standard/{id}', [\App\Http\Controllers\ExportController::class, 'exportStandard'])->name('export.standard');
+    Route::get('/export/interactive/{id}', [\App\Http\Controllers\ExportController::class, 'exportInteractive'])->name('export.interactive');
 
     // ADMIN PANEL ROUTES
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {

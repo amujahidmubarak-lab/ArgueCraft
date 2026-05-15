@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SimulationResult extends Model
+class InteractiveSession extends Model
 {
     use HasFactory;
 
@@ -21,8 +21,8 @@ class SimulationResult extends Model
         return $this->belongsTo(SimulationTopic::class);
     }
 
-    public function phaseResults()
+    public function messages()
     {
-        return $this->hasMany(SimulationPhaseResult::class);
+        return $this->hasMany(InteractiveMessage::class, 'session_id');
     }
 }

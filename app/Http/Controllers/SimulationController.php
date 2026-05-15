@@ -5,10 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SimulationTopic;
 use App\Models\SimulationResult;
+use App\Models\SimulationPhaseResult;
+use App\Services\EvaluationService;
 use Illuminate\Support\Facades\Auth;
 
 class SimulationController extends Controller
 {
+    private $evalService;
+
+    public function __construct(EvaluationService $evalService)
+    {
+        $this->evalService = $evalService;
+    }
+
     private $phases = [
         1 => ['name' => 'Opening', 'instruction' => 'Tuliskan argumen pembuka Anda. Berikan klaim utama beserta alasannya.'],
         2 => ['name' => 'Challenge', 'instruction' => 'Sistem: "Bisa Anda jelaskan lebih detail dengan contoh nyata yang mendukung klaim tersebut?"'],
@@ -19,117 +28,9 @@ class SimulationController extends Controller
 
     public function setup()
     {
-        session()->forget(['sim_topic_id', 'sim_topic', 'sim_position', 'sim_answers', 'sim_phase', 'sim_topic_key', 'sim_mode', 'sim_chat']);
+        session()->forget(['sim_topic_id', 'sim_topic', 'sim_position', 'sim_answers', 'sim_phase', 'sim_topic_key', 'sim_result_id']);
         $topics = SimulationTopic::where('is_active', true)->get();
         return view('simulation.setup', ['topics' => $topics]);
-    }
-
-    public function interactiveSetup()
-    {
-        session()->forget(['sim_topic_id', 'sim_topic', 'sim_position', 'sim_answers', 'sim_phase', 'sim_topic_key', 'sim_mode', 'sim_chat']);
-        $topics = SimulationTopic::where('is_active', true)->get();
-        return view('simulation.interactive_setup', ['topics' => $topics]);
-    }
-
-    public function interactiveStart(Request $request)
-    {
-        $request->validate([
-            'topic' => 'required|exists:simulation_topics,slug',
-            'position' => 'required|in:pro,kontra'
-        ]);
-
-        $topic = SimulationTopic::where('slug', $request->topic)->first();
-        $opponentRole = $request->position == 'pro' ? 'KONTRA' : 'PRO';
-
-        $chat = [
-            [
-                'sender' => 'system',
-                'message' => "Halo! Saya akan menjadi lawan debat Anda hari ini. Mosi kita adalah: " . $topic->title . ". Anda berada di posisi " . strtoupper($request->position) . ", sedangkan saya " . $opponentRole . ". Silakan sampaikan Opening Statement (Argumen Pembuka) Anda terlebih dahulu."
-            ]
-        ];
-
-        session([
-            'sim_mode' => 'interactive',
-            'sim_topic_id' => $topic->id,
-            'sim_topic_key' => $topic->slug,
-            'sim_topic' => $topic->title,
-            'sim_position' => $request->position,
-            'sim_phase' => 1,
-            'sim_answers' => [],
-            'sim_chat' => $chat
-        ]);
-
-        return redirect()->route('simulation.interactive.chat');
-    }
-
-    public function interactiveChat()
-    {
-        $chat = session('sim_chat');
-        if (!$chat) return redirect()->route('simulation.interactive.setup');
-
-        return view('simulation.interactive', [
-            'chat' => $chat,
-            'phaseNum' => session('sim_phase'),
-            'topic' => session('sim_topic'),
-            'position' => session('sim_position')
-        ]);
-    }
-
-    public function interactiveSubmit(Request $request)
-    {
-        $request->validate(['argument' => 'required|string|min:50']);
-
-        $phaseNum = session('sim_phase');
-        $chat = session('sim_chat');
-        $answers = session('sim_answers');
-        $topicKey = session('sim_topic_key');
-        $position = session('sim_position');
-        
-        $topicModel = SimulationTopic::where('slug', $topicKey)->first();
-
-        // Add user message
-        $chat[] = ['sender' => 'user', 'message' => $request->argument];
-
-        $text = $request->argument;
-        $hasReason = false;
-        foreach (['karena', 'sebab', 'alasan'] as $word) if (stripos($text, $word) !== false) $hasReason = true;
-        
-        $hasExample = false;
-        foreach (['contoh', 'bukti', 'fakta'] as $word) if (stripos($text, $word) !== false) $hasExample = true;
-
-        $proKeywords = $topicModel->stance_keywords['pro'] ?? [];
-        $kontraKeywords = $topicModel->stance_keywords['kontra'] ?? [];
-        
-        $proCount = 0; foreach ($proKeywords as $word) if (stripos($text, $word) !== false) $proCount++;
-        $kontraCount = 0; foreach ($kontraKeywords as $word) if (stripos($text, $word) !== false) $kontraCount++;
-        $isConsistent = ($position == 'pro' ? $proCount >= $kontraCount : $kontraCount >= $proCount);
-
-        $answers[$phaseNum] = [
-            'phase' => $this->phases[$phaseNum]['name'],
-            'text' => $text,
-            'has_reason' => $hasReason,
-            'has_example' => $hasExample,
-            'is_consistent' => $isConsistent,
-            'is_off_topic' => ($proCount + $kontraCount == 0),
-            'length' => strlen($text)
-        ];
-
-        $nextPhase = $phaseNum + 1;
-        if ($nextPhase <= 5) {
-            $opponentArguments = $topicModel->opponent_arguments ?? [];
-            $opponentResponse = $opponentArguments[$position][$phaseNum] ?? "Tanggapan yang menarik. Silakan lanjutkan argumen Anda.";
-            $opponentRole = $position == 'pro' ? 'KONTRA' : 'PRO';
-
-            $chat[] = [
-                'sender' => 'system',
-                'message' => "Lawan Debat (" . $opponentRole . "): " . $opponentResponse
-            ];
-            session(['sim_phase' => $nextPhase, 'sim_chat' => $chat, 'sim_answers' => $answers]);
-            return redirect()->route('simulation.interactive.chat');
-        } else {
-            session(['sim_answers' => $answers]);
-            return redirect()->route('simulation.result');
-        }
     }
 
     public function start(Request $request)
@@ -141,7 +42,15 @@ class SimulationController extends Controller
 
         $topic = SimulationTopic::where('slug', $request->topic)->first();
 
+        $result = SimulationResult::create([
+            'user_id' => Auth::id(),
+            'topic_id' => $topic->id,
+            'stance' => $request->position,
+            'total_score' => 0
+        ]);
+
         session([
+            'sim_result_id' => $result->id,
             'sim_topic_id' => $topic->id,
             'sim_topic_key' => $topic->slug,
             'sim_topic' => $topic->title,
@@ -164,12 +73,17 @@ class SimulationController extends Controller
             return redirect()->route('simulation.result');
         }
 
+        $topicModel = SimulationTopic::where('slug', session('sim_topic_key'))->first();
+        $exampleText = $topicModel->example_arguments[session('sim_position')][$phaseNum] ?? null;
+
         return view('simulation.phase', [
             'topic' => session('sim_topic'),
             'position' => session('sim_position'),
             'phase' => $this->phases[$phaseNum],
             'phaseNum' => $phaseNum,
-            'totalPhases' => count($this->phases)
+            'totalPhases' => count($this->phases),
+            'exampleText' => $exampleText,
+            'keywords' => $topicModel->stance_keywords[session('sim_position')] ?? []
         ]);
     }
 
@@ -183,55 +97,26 @@ class SimulationController extends Controller
         $phaseNum = session('sim_phase');
         $topicKey = session('sim_topic_key');
         $position = session('sim_position');
+        $resultId = session('sim_result_id');
+
+        if (!$phaseNum || !isset($this->phases[$phaseNum]) || !$resultId) {
+            return redirect()->route('simulation.setup');
+        }
+
         $text = $request->argument;
         $topicModel = SimulationTopic::where('slug', $topicKey)->first();
-
-        // 1. Structure Analysis
-        $hasReason = false;
-        foreach (['karena', 'sebab', 'alasan', 'dikarenakan', 'akibatnya', 'oleh karena itu'] as $word) {
-            if (stripos($text, $word) !== false) { $hasReason = true; break; }
-        }
-
-        $hasExample = false;
-        foreach (['contoh', 'misal', 'bukti', 'data', 'seperti', 'faktanya'] as $word) {
-            if (stripos($text, $word) !== false) { $hasExample = true; break; }
-        }
-
-        // 2. Logic Connectives
-        $connectives = [
-            'contrast' => ['namun', 'tetapi', 'sebaliknya', 'padahal', 'disisi lain'],
-            'addition' => ['selain itu', 'bahkan', 'juga', 'serta', 'tambah', 'lagi pula'],
-            'conclusion' => ['maka', 'jadi', 'akhirnya', 'sehingga', 'kesimpulannya']
-        ];
         
-        $usedTypes = 0;
-        foreach ($connectives as $type => $words) {
-            foreach ($words as $word) {
-                if (stripos($text, $word) !== false) { $usedTypes++; break; }
-            }
-        }
+        $eval = $this->evalService->evaluateArgumentText($text, $position, $topicModel, $phaseNum);
+        $answers[$phaseNum] = $eval;
 
-        // 3. Stance Analysis
-        $proKeywords = $topicModel->stance_keywords['pro'] ?? [];
-        $kontraKeywords = $topicModel->stance_keywords['kontra'] ?? [];
-        
-        $proCount = 0; foreach ($proKeywords as $word) { if (stripos($text, $word) !== false) $proCount++; }
-        $kontraCount = 0; foreach ($kontraKeywords as $word) { if (stripos($text, $word) !== false) $kontraCount++; }
-
-        $isConsistent = true;
-        if ($position == 'pro' && $kontraCount > $proCount + 1) $isConsistent = false;
-        if ($position == 'kontra' && $proCount > $kontraCount + 1) $isConsistent = false;
-
-        $answers[$phaseNum] = [
-            'phase' => $this->phases[$phaseNum]['name'],
-            'text' => $text,
-            'has_reason' => $hasReason,
-            'has_example' => $hasExample,
-            'connective_variety' => $usedTypes,
-            'is_consistent' => $isConsistent,
-            'is_off_topic' => ($proCount + $kontraCount == 0),
-            'length' => strlen($text)
-        ];
+        SimulationPhaseResult::create([
+            'simulation_result_id' => session('sim_result_id'),
+            'phase_name' => $this->phases[$phaseNum]['name'],
+            'user_argument' => $text,
+            'score' => $eval['score'],
+            'feedback' => json_encode($eval),
+            'relevance_status' => $eval['status']
+        ]);
 
         session(['sim_answers' => $answers, 'sim_phase' => $phaseNum + 1]);
 
@@ -251,53 +136,91 @@ class SimulationController extends Controller
         $scores = ['struktur' => 0, 'kedalaman' => 0, 'konsistensi' => 0, 'variasi_logika' => 0];
         $phasePerformances = [];
 
+        $allUsedKeywords = [];
+        $contradictionCount = 0;
+        $totalQualityScore = 0;
+
         foreach ($answers as $num => $ans) {
-            $phaseScore = 0;
-            if ($ans['has_reason']) { $scores['struktur'] += 3; $phaseScore += 3; }
-            if ($ans['has_example']) { $scores['struktur'] += 3; $phaseScore += 3; }
+            $phaseScore = $ans['score'] ?? 0;
+            $totalQualityScore += ($ans['quality_level'] ?? 1);
+            $keywordCount = count($ans['used_keywords'] ?? []);
+            
+            $strukturScore = 0;
+            if ($ans['has_reason']) $strukturScore += 2.5;
+            if ($ans['has_example']) $strukturScore += 2.5;
+            $strukturScore += min(3, $keywordCount * 1.5);
+            $scores['struktur'] += min(6, $strukturScore);
 
-            $lenScore = $ans['length'] > 200 ? 5 : ($ans['length'] > 120 ? 3 : 1);
-            $scores['kedalaman'] += $lenScore; $phaseScore += $lenScore;
+            $lenScore = $ans['length'] > 150 ? 5 : ($ans['length'] > 80 ? 3 : 1);
+            $lenScore += min(2, $keywordCount);
+            $scores['kedalaman'] += min(5, $lenScore);
 
-            if ($ans['is_consistent']) { $scores['konsistensi'] += 5; $phaseScore += 5; }
+            if ($ans['is_consistent']) $scores['konsistensi'] += 5;
 
             $varScore = min(4, ($ans['connective_variety'] ?? 0) * 1.5);
-            $scores['variasi_logika'] += $varScore; $phaseScore += $varScore;
+            if ($varScore == 0 && $keywordCount > 0) $varScore = 2;
+            $scores['variasi_logika'] += min(4, $varScore);
 
-            $phasePerformances[$num] = ['name' => $ans['phase'], 'score' => $phaseScore];
+            $phasePerformances[$num] = ['name' => $ans['phase'], 'score' => $phaseScore, 'status' => $ans['status'] ?? 'Lemah'];
+            
+            $allUsedKeywords = array_merge($allUsedKeywords, $ans['used_keywords'] ?? []);
+            if ($ans['contradiction'] ?? false) $contradictionCount++;
         }
+
+        $overallQuality = round($totalQualityScore / count($answers));
 
         uasort($phasePerformances, function($a, $b) { return $b['score'] <=> $a['score']; });
         $strongest = reset($phasePerformances);
         $weakest = end($phasePerformances);
 
-        $totalScore = min(100, array_sum($scores));
-        
-        $offTopicCount = 0;
-        foreach ($answers as $ans) { if ($ans['is_off_topic'] ?? false) $offTopicCount++; }
-
-        if ($totalScore >= 85) $feedbackParts[] = "Luar biasa! Performa Anda menunjukkan kualitas debater tingkat lanjut.";
-        elseif ($totalScore >= 70) $feedbackParts[] = "Bagus! Anda sudah memahami dasar-dasar dengan baik.";
-        else $feedbackParts[] = "Teruslah berlatih untuk membangun argumen yang lebih kokoh.";
-
-        $feedbackParts[] = "Analisis: Anda paling kuat pada fase " . $strongest['name'] . ", namun performa di fase " . $weakest['name'] . " masih bisa ditingkatkan lagi.";
-        
-        if ($offTopicCount > 0) {
-            $feedbackParts[] = "⚠️ PENTING: Ada " . $offTopicCount . " fase di mana jawaban Anda terdeteksi TIDAK RELEVAN dengan topik. Pastikan argumen Anda menggunakan kata kunci yang berkaitan dengan mosi.";
-            $totalScore = max(0, $totalScore - ($offTopicCount * 15)); // Penalty for off-topic
+        // If all phases are low quality, don't show strongest
+        $isUniformlyLow = true;
+        foreach($phasePerformances as $p) { if($p['score'] > 40) $isUniformlyLow = false; }
+        if($isUniformlyLow) {
+            $strongest = ['name' => 'Belum ada fase yang menonjol', 'score' => 0];
         }
 
-        if ($scores['variasi_logika'] < 10) $feedbackParts[] = "Saran: Gunakan lebih banyak variasi kata hubung seperti 'namun', 'selain itu', atau 'maka dari itu' untuk memperlancar alur logika Anda.";
-        if ($scores['konsistensi'] < 20 && $offTopicCount == 0) $feedbackParts[] = "Saran: Beberapa poin argumen Anda terdeteksi melenceng dari posisi " . strtoupper(session('sim_position')) . " yang seharusnya.";
+        $totalScore = min(100, array_sum($scores));
 
-        // SAVE RESULT TO DATABASE IF AUTHENTICATED
-        if (Auth::check() && session()->has('sim_topic_id')) {
-            SimulationResult::create([
-                'user_id' => Auth::id(),
-                'topic_id' => session('sim_topic_id'),
-                'total_score' => round($totalScore),
-                'details' => $answers
-            ]);
+        $topicModel = SimulationTopic::where('slug', session('sim_topic_key'))->first();
+        $progressFeedback = "";
+
+        $feedbackParts = [];
+        
+        if ($overallQuality == 1) {
+            $feedbackParts[] = "Maaf, argumen Anda belum dapat dianalisis secara mendalam. Jawaban terdeteksi sangat singkat atau tidak relevan dengan topik debat. Cobalah menulis argumen yang lebih jelas dan terstruktur di sesi berikutnya.";
+        } elseif ($overallQuality == 2) {
+            $feedbackParts[] = "Performa dasar yang cukup baik. Anda sudah mulai menggunakan alasan, namun argumen Anda masih bisa diperkuat dengan data atau contoh nyata agar lebih meyakinkan.";
+            $feedbackParts[] = "Fase terkuat Anda adalah " . $strongest['name'] . ".";
+        } else {
+            $feedbackParts[] = "Luar biasa! Argumen Anda sangat terstruktur dan meyakinkan. Anda menunjukkan kualitas seorang debater yang kritis dan mampu mempertahankan posisi dengan baik.";
+            $feedbackParts[] = "Analisis mendalam menunjukkan Anda paling unggul pada fase " . $strongest['name'] . ".";
+        }
+
+        if ($overallQuality > 1 && $contradictionCount > 0) {
+            $feedbackParts[] = "Catatan: Tetap konsisten pada posisi Anda agar tidak mudah dipatahkan lawan.";
+        }
+
+        $allUsedKeywords = array_unique($allUsedKeywords);
+        $targetKeywords = $topicModel->stance_keywords[session('sim_position')] ?? [];
+        $missingKeywords = array_diff($targetKeywords, $allUsedKeywords);
+
+        if ($overallQuality > 1 && count($missingKeywords) > 0) {
+            $suggested = array_slice($missingKeywords, 0, 3);
+            $feedbackParts[] = "💡 Tips: Gunakan istilah kunci seperti '" . implode("', '", $suggested) . "' untuk memperkuat relevansi materi.";
+        }
+
+        $feedbackStr = implode(" ", $feedbackParts);
+
+        // UPDATE RESULT
+        if (session()->has('sim_result_id')) {
+            $result = SimulationResult::find(session('sim_result_id'));
+            if ($result) {
+                $result->update([
+                    'total_score' => round($totalScore),
+                    'feedback_summary' => $feedbackStr
+                ]);
+            }
         }
 
         return view('simulation.result', [
@@ -308,7 +231,13 @@ class SimulationController extends Controller
             'scores' => $scores,
             'strongest' => $strongest,
             'weakest' => $weakest,
-            'feedback' => implode(" ", $feedbackParts)
+            'feedback' => $feedbackStr,
+            'missingKeywords' => $missingKeywords,
+            'overallQuality' => $overallQuality,
+            'exampleArguments' => $topicModel->example_arguments[session('sim_position')] ?? [],
+            'result_id' => session('sim_result_id'),
+            'is_interactive' => false
         ]);
     }
 }
+

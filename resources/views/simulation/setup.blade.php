@@ -3,13 +3,15 @@
 @section('title', 'Persiapan Simulasi - ArgueCraft')
 
 @section('content')
-<div class="max-w-2xl mx-auto">
-    <div class="text-center mb-10">
-        <h1 class="text-4xl font-black text-slate-900 mb-2">Persiapan Simulasi</h1>
-        <p class="text-lg text-slate-600">Pilih topik dan tentukan posisi Anda sebelum memulai simulasi debat.</p>
+<div class="max-w-4xl mx-auto">
+    <!-- Clean Header -->
+    <div class="text-center mb-8">
+        <span class="text-[10px] font-black text-primary-red uppercase tracking-widest block mb-2">Langkah Awal</span>
+        <h1 class="text-3xl md:text-4xl font-black text-slate-900 mb-3">Persiapan Simulasi</h1>
+        <p class="text-base text-slate-600">Pilih topik dan tentukan posisi Anda sebelum memulai simulasi debat.</p>
     </div>
 
-    <div class="glass p-8 md:p-10 rounded-[2.5rem] shadow-xl relative overflow-hidden">
+    <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-50 relative overflow-hidden">
         <div class="absolute top-0 right-0 w-64 h-64 bg-red-100/50 rounded-full blur-3xl -mr-20 -mt-20"></div>
         
         <form method="POST" action="{{ route('simulation.start') }}" class="relative z-10 space-y-8">

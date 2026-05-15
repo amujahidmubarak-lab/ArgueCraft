@@ -34,6 +34,22 @@ class SimulationTopicSeeder extends Seeder
                         3 => "Negara-negara Skandinavia sukses dengan pendidikan gratisnya dan memiliki indeks kebahagiaan serta inovasi yang tinggi. Mengapa ini tidak bisa diterapkan?",
                         4 => "Silakan berikan pernyataan penutup untuk merangkum posisi Kontra Anda secara utuh."
                     ]
+                ],
+                'example_arguments' => [
+                    'pro' => [
+                        1 => "Pendidikan gratis sangat penting karena setiap warga negara berhak atas akses ilmu tanpa terhalang biaya. Ini akan menciptakan pemerataan kesempatan belajar.",
+                        2 => "Pemerintah bisa merealokasi anggaran dari sektor lain atau menarik pajak dari perusahaan besar untuk mensubsidi pendidikan, sehingga masyarakat tidak terbebani.",
+                        3 => "Kualitas pendidikan tetap bisa terjaga jika pemerintah menerapkan standar pengawasan ketat, alih-alih mengandalkan dana dari masyarakat secara langsung.",
+                        4 => "Kesimpulannya, pendidikan gratis adalah kewajiban negara untuk mencerdaskan bangsa dan menghapus kesenjangan sosial di masa depan.",
+                        5 => "Sebagai penutup, akses pendidikan tanpa biaya adalah investasi jangka panjang yang akan meningkatkan daya saing bangsa di kancah internasional."
+                    ],
+                    'kontra' => [
+                        1 => "Pendidikan gratis secara total kurang realistis karena akan membebani APBN secara signifikan, yang ujung-ujungnya dibebankan kembali ke rakyat melalui pajak.",
+                        2 => "Daripada menggratiskan secara total, pemerintah lebih baik memberikan beasiswa atau subsidi silang yang tepat sasaran agar anggaran lebih efisien.",
+                        3 => "Pendidikan yang sepenuhnya dibiayai negara seringkali mengalami birokrasi yang lambat, sehingga inovasi sekolah terhambat dibanding swasta mandiri.",
+                        4 => "Sebagai kesimpulan, pendidikan tidak perlu digratiskan total, melainkan diberikan keringanan bersyarat agar kualitas dan fasilitas tetap terjamin.",
+                        5 => "Pernyataan penutup saya adalah kemandirian finansial institusi pendidikan tetap diperlukan untuk menjaga fleksibilitas dan standar kualitas yang tinggi."
+                    ]
                 ]
             ],
             [
@@ -57,6 +73,22 @@ class SimulationTopicSeeder extends Seeder
                         2 => "Banyak studi menunjukkan pekerja justru lebih produktif di rumah karena terhindar dari gangguan kantor. Bisakah Anda membantah fakta ini?",
                         3 => "WFH memberikan dampak positif bagi lingkungan karena berkurangnya polusi kendaraan. Tidakkah ini pantas dijadikan standar baru?",
                         4 => "Silakan berikan pernyataan penutup untuk merangkum posisi Kontra Anda terkait WFH."
+                    ]
+                ],
+                'example_arguments' => [
+                    'pro' => [
+                        1 => "WFH memberikan fleksibilitas waktu yang memungkinkan karyawan menyeimbangkan kehidupan pribadi dan pekerjaan secara optimal.",
+                        2 => "Dengan bekerja dari rumah, karyawan dapat menghemat biaya transportasi dan waktu yang biasanya terbuang karena kemacetan di jalan.",
+                        3 => "Teknologi kolaborasi digital modern memungkinkan koordinasi tim tetap berjalan efektif meskipun dilakukan secara jarak jauh dari berbagai lokasi.",
+                        4 => "Keseimbangan waktu yang lebih baik terbukti meningkatkan kesehatan mental karyawan, yang berdampak positif pada produktivitas jangka panjang.",
+                        5 => "Kesimpulannya, WFH adalah evolusi dunia kerja yang mendukung efisiensi operasional sekaligus kesejahteraan karyawan di era digital."
+                    ],
+                    'kontra' => [
+                        1 => "Bekerja dari kantor tetap diperlukan untuk menjaga koordinasi tim yang cepat dan memfasilitasi komunikasi tatap muka yang lebih kaya.",
+                        2 => "Interaksi fisik di kantor menciptakan budaya organisasi yang kuat dan memicu inovasi spontan yang sulit terjadi melalui pertemuan daring.",
+                        3 => "Tanpa pengawasan langsung, kedisiplinan kerja berisiko menurun dan keamanan data perusahaan lebih sulit dikontrol di luar kantor.",
+                        4 => "Isolasi sosial akibat WFH jangka panjang dapat berdampak negatif pada kesehatan psikologis dan rasa kebersamaan antar rekan kerja.",
+                        5 => "Pernyataan penutup saya adalah kantor fisik tetap menjadi fondasi penting bagi profesionalisme, kolaborasi kreatif, dan stabilitas operasional."
                     ]
                 ]
             ],
@@ -82,6 +114,22 @@ class SimulationTopicSeeder extends Seeder
                         3 => "AI dapat membantu guru mengurangi beban administratif, sehingga lebih fokus pada pendampingan karakter siswa. Bukankah ini meningkatkan kualitas pendidikan?",
                         4 => "Silakan berikan pernyataan penutup untuk merangkum posisi Kontra Anda."
                     ]
+                ],
+                'example_arguments' => [
+                    'pro' => [
+                        1 => "Penggunaan AI di sekolah adalah inovasi teknologi yang membantu siswa mendapatkan materi pembelajaran yang lebih personal dan cepat.",
+                        2 => "AI dapat berfungsi sebagai alat bantu yang modern untuk mempermudah riset dan memberikan penjelasan tambahan bagi topik yang sulit dipahami.",
+                        3 => "Integrasi AI memungkinkan sistem pendidikan beradaptasi dengan kemajuan teknologi dunia nyata, mempersiapkan siswa menghadapi masa depan digital.",
+                        4 => "Dengan bantuan AI, guru dapat menciptakan metode pengajaran yang lebih kreatif dan efisien dalam memantau perkembangan setiap individu.",
+                        5 => "Sebagai penutup, AI harus dipandang sebagai mitra teknologi yang mampu meningkatkan kualitas dan kecepatan akses ilmu pengetahuan di sekolah."
+                    ],
+                    'kontra' => [
+                        1 => "Ketergantungan pada AI berisiko membuat siswa menjadi malas dan menurunkan kemampuan mereka untuk berpikir kritis serta mandiri.",
+                        2 => "Maraknya penggunaan AI memudahkan praktik plagiarisme dan kecurangan, yang merusak nilai etika dan integritas dalam dunia pendidikan.",
+                        3 => "Pendidikan seharusnya fokus pada pengembangan proses berpikir manusia, bukan sekadar memberikan jawaban instan melalui algoritma komputer.",
+                        4 => "Tanpa pengawasan ketat, penggunaan AI akan menghilangkan interaksi intelektual yang mendalam antara guru dan murid di dalam kelas.",
+                        5 => "Kesimpulannya, sekolah harus membatasi AI untuk melindungi kemampuan dasar berpikir kritis dan orisinalitas karya akademik siswa."
+                    ]
                 ]
             ],
             [
@@ -105,6 +153,22 @@ class SimulationTopicSeeder extends Seeder
                         2 => "Data menunjukkan bahwa cyberbullying dan depresi di kalangan remaja meningkat tajam seiring penggunaan media sosial. Bisakah Anda membantah ini?",
                         3 => "Otak remaja belum berkembang sempurna untuk mengelola dopamine dari media sosial. Tidakkah ini alasan kuat untuk pembatasan?",
                         4 => "Silakan berikan pernyataan penutup untuk posisi Kontra Anda."
+                    ]
+                ],
+                'example_arguments' => [
+                    'pro' => [
+                        1 => "Pembatasan media sosial sangat penting untuk melindungi kesehatan mental remaja dari risiko kecanduan dan paparan konten negatif.",
+                        2 => "Regulasi durasi penggunaan dapat membantu remaja fokus pada aktivitas fisik dan belajar, sehingga menciptakan keseimbangan hidup yang lebih sehat.",
+                        3 => "Remaja membutuhkan batas yang jelas untuk mencegah dampak buruk cyberbullying dan tekanan sosial yang sering terjadi di dunia digital.",
+                        4 => "Keamanan anak-anak di internet harus menjadi prioritas utama pemerintah melalui aturan pembatasan usia dan konten yang lebih ketat.",
+                        5 => "Sebagai kesimpulan, membatasi akses media sosial bagi remaja adalah langkah preventif yang aman untuk menjamin tumbuh kembang mereka yang optimal."
+                    ],
+                    'kontra' => [
+                        1 => "Media sosial adalah platform penting bagi remaja untuk mengekspresikan kreativitas dan membangun koneksi sosial di era modern ini.",
+                        2 => "Membatasi akses media sosial sama saja dengan merampas hak remaja untuk mendapatkan informasi dan sarana belajar yang beragam secara gratis.",
+                        3 => "Daripada membatasi, kita seharusnya memberikan edukasi literasi digital agar remaja mampu menggunakan media sosial secara bijak dan bertanggung jawab.",
+                        4 => "Kebebasan berekspresi di dunia digital memungkinkan remaja menemukan komunitas yang mendukung minat dan bakat unik mereka.",
+                        5 => "Pernyataan penutup saya adalah media sosial harus tetap terbuka bagi remaja sebagai alat pemberdayaan diri dan akses informasi tanpa batas."
                     ]
                 ]
             ],
@@ -130,6 +194,22 @@ class SimulationTopicSeeder extends Seeder
                         3 => "Negara seperti China yang menerapkan hukuman mati untuk koruptor berhasil menekan angka korupsi secara signifikan. Mengapa ini tidak bisa diterapkan?",
                         4 => "Silakan berikan pernyataan penutup untuk posisi Kontra Anda."
                     ]
+                ],
+                'example_arguments' => [
+                    'pro' => [
+                        1 => "Penerapan hukuman mati bagi koruptor sangat diperlukan untuk memberikan efek jera yang maksimal dan tegas terhadap kejahatan luar biasa.",
+                        2 => "Korupsi adalah tindakan yang merampas kesejahteraan rakyat, sehingga hukuman yang paling berat adalah bentuk keadilan nyata bagi masyarakat.",
+                        3 => "Ketegasan hukum melalui hukuman mati akan mengirimkan pesan kuat bahwa negara tidak mentoleransi pengkhianatan terhadap kepercayaan publik.",
+                        4 => "Efek jera dari hukuman ini diharapkan mampu menekan angka korupsi secara signifikan dan menyelamatkan keuangan negara untuk masa depan.",
+                        5 => "Sebagai penutup, hukuman mati adalah instrumen hukum yang diperlukan untuk membersihkan negara dari praktik korupsi yang sudah mengakar."
+                    ],
+                    'kontra' => [
+                        1 => "Hukuman mati bertentangan dengan prinsip Hak Asasi Manusia (HAM) dan nilai kemanusiaan yang menjunjung tinggi hak hidup setiap orang.",
+                        2 => "Sistem hukum yang belum sempurna berisiko menimbulkan kesalahan vonis yang tidak dapat diperbaiki jika hukuman mati sudah dilaksanakan.",
+                        3 => "Lebih baik fokus pada reformasi sistem pencegahan dan rehabilitasi pelaku agar mereka dapat menebus kesalahan tanpa harus menghilangkan nyawa.",
+                        4 => "Hukuman yang proporsional seperti penyitaan aset dan penjara seumur hidup jauh lebih manusiawi namun tetap mampu memberikan sanksi yang berat.",
+                        5 => "Pernyataan penutup saya adalah keadilan sejati tidak dicapai dengan kematian, melainkan dengan perbaikan sistem hukum yang adil dan transparan."
+                    ]
                 ]
             ],
             [
@@ -153,6 +233,22 @@ class SimulationTopicSeeder extends Seeder
                         2 => "Teknologi reaktor generasi terbaru sudah jauh lebih aman. Kecelakaan Chernobyl dan Fukushima terjadi pada teknologi lama. Bisakah Anda membantah ini?",
                         3 => "Nuklir menghasilkan emisi karbon hampir nol saat operasi. Untuk mencapai target net-zero, nuklir adalah pilihan paling realistis. Tanggapi!",
                         4 => "Silakan berikan pernyataan penutup untuk posisi Kontra Anda."
+                    ]
+                ],
+                'example_arguments' => [
+                    'pro' => [
+                        1 => "Pembangunan PLTN adalah solusi energi bersih masa depan untuk memenuhi kebutuhan listrik nasional yang terus meningkat dengan emisi karbon rendah.",
+                        2 => "Energi nuklir sangat efisien karena mampu menghasilkan daya besar secara konsisten dibandingkan sumber energi terbarukan lainnya yang bergantung cuaca.",
+                        3 => "Dengan teknologi modern, keamanan reaktor nuklir dapat dijamin untuk mendukung kemandirian energi dan stabilitas ekonomi jangka panjang Indonesia.",
+                        4 => "Transisi ke energi nuklir akan membantu Indonesia mencapai target net-zero emission lebih cepat sambil menjaga harga listrik tetap terjangkau.",
+                        5 => "Sebagai penutup, PLTN adalah investasi strategis untuk menjamin kedaulatan energi nasional dan mendorong inovasi teknologi di tanah air."
+                    ],
+                    'kontra' => [
+                        1 => "Risiko bencana alam seperti gempa dan tsunami di Indonesia menjadikan pembangunan PLTN sebagai ancaman bahaya radiasi yang sangat tinggi.",
+                        2 => "Masalah pengelolaan limbah nuklir yang beracun dan membutuhkan biaya mahal akan menjadi beban lingkungan bagi generasi mendatang.",
+                        3 => "Indonesia sebaiknya fokus pada pengembangan energi terbarukan yang lebih aman seperti tenaga surya, angin, dan panas bumi yang melimpah.",
+                        4 => "Biaya pembangunan dan pemeliharaan PLTN yang sangat mahal dapat dialokasikan untuk sektor lain yang lebih mendesak dan minim risiko bencana.",
+                        5 => "Kesimpulannya, risiko keamanan dan dampak lingkungan dari nuklir jauh lebih besar dibandingkan manfaat energi yang dihasilkannya bagi Indonesia."
                     ]
                 ]
             ],
@@ -178,6 +274,22 @@ class SimulationTopicSeeder extends Seeder
                         3 => "Seragam membatasi ekspresi diri yang penting untuk perkembangan psikologis remaja. Tidakkah ini kontraproduktif dengan tujuan pendidikan?",
                         4 => "Silakan berikan pernyataan penutup untuk posisi Kontra Anda."
                     ]
+                ],
+                'example_arguments' => [
+                    'pro' => [
+                        1 => "Penghapusan seragam sekolah akan memberikan kebebasan bagi siswa untuk mengekspresikan identitas diri dan kreativitas mereka melalui pakaian.",
+                        2 => "Siswa akan merasa lebih nyaman belajar jika diizinkan mengenakan pakaian pilihan sendiri yang sesuai dengan kepribadian dan kebutuhan individu mereka.",
+                        3 => "Menghilangkan kewajiban seragam dapat mengurangi beban biaya rutin bagi orang tua yang seringkali harus membeli seragam baru setiap tahun.",
+                        4 => "Kemandirian dalam memilih pakaian mendidik siswa untuk bertanggung jawab atas penampilan mereka sendiri sejak usia dini di sekolah.",
+                        5 => "Sebagai penutup, pendidikan seharusnya fokus pada pengembangan karakter individu, bukan pada penyeragaman penampilan fisik yang membatasi ekspresi."
+                    ],
+                    'kontra' => [
+                        1 => "Seragam sekolah sangat penting untuk menciptakan kesetaraan sosial di antara siswa tanpa memandang latar belakang ekonomi keluarga mereka.",
+                        2 => "Penggunaan seragam membantu menjaga disiplin dan fokus siswa agar lebih berkonsentrasi pada pelajaran daripada bersaing dalam hal penampilan.",
+                        3 => "Seragam berfungsi sebagai identitas sekolah yang kuat dan mempermudah pengawasan terhadap keamanan siswa di lingkungan institusi pendidikan.",
+                        4 => "Dengan seragam, risiko bullying akibat perbedaan status sosial yang terlihat dari pakaian mahal dapat ditekan secara signifikan di sekolah.",
+                        5 => "Pernyataan penutup saya adalah seragam merupakan simbol persatuan dan kesederhanaan yang mendukung lingkungan belajar yang kondusif dan adil."
+                    ]
                 ]
             ],
             [
@@ -201,6 +313,22 @@ class SimulationTopicSeeder extends Seeder
                         2 => "Sejak UN dihapus, motivasi belajar siswa di banyak sekolah menurun drastis. Guru kesulitan mendorong siswa belajar serius. Bantah ini!",
                         3 => "Asesmen pengganti UN seperti AKM masih belum matang dan banyak kendala teknis. Bukankah lebih baik kembali ke sistem yang sudah terbukti?",
                         4 => "Silakan berikan pernyataan penutup untuk posisi Kontra Anda."
+                    ]
+                ],
+                'example_arguments' => [
+                    'pro' => [
+                        1 => "Pengembalian Ujian Nasional (UN) diperlukan sebagai tolak ukur standar kualitas pendidikan yang merata di seluruh wilayah Indonesia.",
+                        2 => "UN menciptakan motivasi belajar bagi siswa dan semangat kompetisi sehat untuk mencapai hasil akademik yang terbaik secara nasional.",
+                        3 => "Sistem evaluasi yang seragam melalui UN memudahkan pemerintah dalam memetakan masalah pendidikan dan melakukan perbaikan yang tepat sasaran.",
+                        4 => "Tanpa UN, kelulusan siswa menjadi kurang terstandarisasi, yang dapat menyulitkan proses seleksi masuk ke jenjang pendidikan yang lebih tinggi.",
+                        5 => "Sebagai kesimpulan, UN adalah instrumen penting untuk menjaga mutu dan disiplin akademik dalam sistem pendidikan nasional kita."
+                    ],
+                    'kontra' => [
+                        1 => "Ujian Nasional hanya menciptakan tekanan psikologis dan stres yang berlebihan bagi siswa tanpa mencerminkan kemampuan mereka yang sebenarnya.",
+                        2 => "Evaluasi pendidikan seharusnya bersifat holistik dan beragam, mencakup karakter serta keterampilan praktis, bukan hanya tes kognitif tertulis.",
+                        3 => "UN sangat tidak adil bagi siswa di daerah terpencil karena adanya ketimpangan fasilitas pendidikan yang sangat jauh dibanding kota besar.",
+                        4 => "Sistem penilaian berbasis portofolio dan asesmen kelas lebih kontekstual dalam mengukur perkembangan unik setiap siswa secara mendalam.",
+                        5 => "Pernyataan penutup saya adalah pendidikan harus memanusiakan siswa, bukan sekadar menjadikan mereka angka dalam statistik standar nasional."
                     ]
                 ]
             ],

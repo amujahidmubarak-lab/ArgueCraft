@@ -55,6 +55,26 @@
                 @error('position')
                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror
+            <!-- Pilihan Mode -->
+            <div>
+                <label class="block text-lg font-bold text-slate-900 mb-4">3. Pilih Mode Latihan</label>
+                <div class="grid grid-cols-2 gap-4">
+                    <label class="flex items-center p-4 border-2 border-slate-200 rounded-2xl cursor-pointer hover:bg-white/50 hover:border-primary-red/50 transition-all group has-[:checked]:border-primary-red has-[:checked]:bg-white">
+                        <input type="radio" name="mode" value="normal" class="w-5 h-5 text-primary-red focus:ring-primary-red border-slate-300" checked>
+                        <div class="ml-4">
+                            <p class="text-slate-900 font-bold group-has-[:checked]:text-primary-red">Normal Mode</p>
+                            <p class="text-[10px] text-slate-500">Santai & Tanpa Batas Waktu</p>
+                        </div>
+                    </label>
+                    
+                    <label class="flex items-center p-4 border-2 border-slate-200 rounded-2xl cursor-pointer hover:bg-white/50 hover:border-primary-red/50 transition-all group has-[:checked]:border-primary-red has-[:checked]:bg-white">
+                        <input type="radio" name="mode" value="speed" class="w-5 h-5 text-primary-red focus:ring-primary-red border-slate-300">
+                        <div class="ml-4">
+                            <p class="text-slate-900 font-bold group-has-[:checked]:text-primary-red">Speed Mode ⚡</p>
+                            <p class="text-[10px] text-slate-500">Latih Kecepatan Berpikir</p>
+                        </div>
+                    </label>
+                </div>
             </div>
 
             <div class="pt-4">

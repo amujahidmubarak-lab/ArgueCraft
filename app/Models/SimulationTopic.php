@@ -11,6 +11,7 @@ class SimulationTopic extends Model
     protected $casts = [
         'stance_keywords' => 'array',
         'opponent_arguments' => 'array',
+        'example_arguments' => 'array',
         'is_active' => 'boolean',
     ];
 }

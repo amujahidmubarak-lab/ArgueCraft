@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>@yield('title', 'ArgueCraft - Platform Debat')</title>
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23E63946%22/><text y=%22.9em%22 x=%2250%%22 text-anchor=%22middle%22 font-family=%22Outfit, sans-serif%22 font-weight=%22bold%22 font-size=%2270%22 fill=%22white%22>A</text></svg>">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -11,6 +12,8 @@
 
         <!-- Styles / Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        <style>[x-cloak] { display: none !important; }</style>
     </head>
     <body class="antialiased red-gradient min-h-screen text-slate-900 font-['Outfit'] relative flex flex-col">
         <!-- Background Decoration -->
@@ -20,7 +23,8 @@
             <div class="absolute -bottom-[10%] -left-[10%] w-[40%] h-[40%] bg-red-300/10 blur-[120px] rounded-full"></div>
         </div>
 
-        <!-- Navbar -->
+        <!-- Navbar (Hidden during active simulation for focus) -->
+        @if(!request()->routeIs(['simulation.phase', 'simulation.interactive.chat']))
         <nav class="sticky top-0 z-50 px-6 py-4 glass border-b border-white/20">
             <div class="max-w-7xl mx-auto flex justify-between items-center">
                 <a href="{{ url('/') }}" class="flex items-center gap-2 group">
@@ -32,9 +36,10 @@
                 
                 @auth
                 <div class="hidden md:flex items-center gap-8 font-medium text-slate-600">
-                    <a href="{{ route('dashboard') }}" class="hover:text-primary-red transition-colors {{ request()->routeIs('dashboard') ? 'text-primary-red font-bold' : '' }}">Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="hover:text-primary-red transition-colors {{ request()->routeIs('dashboard') && !request()->has('view') ? 'text-primary-red font-bold' : '' }}">Portal</a>
+                    <a href="{{ route('dashboard.stats') }}" class="hover:text-primary-red transition-colors {{ request()->routeIs('dashboard.stats') ? 'text-primary-red font-bold' : '' }}">Statistik</a>
                     <a href="{{ route('learning.index') }}" class="hover:text-primary-red transition-colors {{ request()->routeIs('learning.*') ? 'text-primary-red font-bold' : '' }}">Pembelajaran</a>
-                    <a href="{{ route('simulation.setup') }}" class="hover:text-primary-red transition-colors {{ request()->routeIs('simulation.*') ? 'text-primary-red font-bold' : '' }}">Simulasi</a>
+                    <a href="{{ route('dashboard', ['view' => 'simulasi']) }}" class="hover:text-primary-red transition-colors {{ request()->input('view') == 'simulasi' ? 'text-primary-red font-bold' : '' }}">Simulasi</a>
                 </div>
                 @endauth
 
@@ -52,17 +57,20 @@
                 </div>
             </div>
         </nav>
+        @endif
 
         <!-- Main Content -->
-        <main class="relative z-10 flex-grow px-6 py-12">
+        <main class="relative z-10 flex-grow px-4 sm:px-6 lg:px-8 py-12 page-fade-in">
             @yield('content')
         </main>
 
         <!-- Footer -->
+        @if(!request()->routeIs(['simulation.phase', 'simulation.interactive.chat']))
         <footer class="relative z-10 py-8 px-6 border-t border-red-100/50 mt-auto bg-white/10 backdrop-blur-sm">
             <div class="max-w-7xl mx-auto text-center text-slate-500 text-sm">
                 &copy; {{ date('Y') }} ArgueCraft. Dibuat untuk diskusi yang lebih baik.
             </div>
         </footer>
+        @endif
     </body>
 </html>

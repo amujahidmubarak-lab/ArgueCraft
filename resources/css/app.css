@@ -6,30 +6,103 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-    
-    --color-primary-red: oklch(60% 0.2 25);
-    --color-secondary-red: oklch(70% 0.15 25);
-    --color-accent-red: oklch(55% 0.25 25);
+    --font-sans: 'Outfit', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --color-primary-red: #E63946;
+    --color-secondary-red: #F1FAEE;
+    --color-accent-red: #D62839;
+    --color-dark-slate: #1D3557;
 }
 
+@layer base {
+    body {
+        @apply antialiased text-slate-900 bg-white;
+        overflow-x: hidden;
+    }
+}
+
+/* ==============================
+   UTILITY CLASSES
+   ============================== */
+
 @utility glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+@utility glass-dark {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 @utility bg-grid {
     background-image: radial-gradient(var(--color-primary-red) 0.5px, transparent 0.5px);
-    background-size: 24px 24px;
-    opacity: 0.05;
+    background-size: 32px 32px;
+    opacity: 0.04;
 }
 
 @utility red-gradient {
-    background: linear-gradient(135deg, oklch(98% 0.01 25), oklch(95% 0.03 25));
+    background: linear-gradient(180deg, #FFF8F8 0%, #FFFFFF 100%);
 }
+
+@utility page-fade-in {
+    animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility card-hover {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 active:scale-95;
+}
+
+@utility btn-premium {
+    @apply transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl;
+}
+
+/* ==============================
+   KEYFRAME ANIMATIONS
+   ============================== */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(0.9); opacity: 1; }
+    80%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes countUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-in-right { animation: slideInRight 0.5s ease-out forwards; }
+.animate-slide-in-left { animation: slideInLeft 0.5s ease-out forwards; }
+.animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
+.animate-count-up { animation: countUp 0.6s ease-out forwards; }
 
 @utility animate-float {
     animation: float 6s ease-in-out infinite;
@@ -37,6 +110,90 @@
 
 @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
+    50% { transform: translateY(-15px); }
 }
 
+/* ==============================
+   SIMULATION PAGE COMPONENTS
+   ============================== */
+
+/* Shared card style — rounded-2xl, white bg, subtle border & shadow */
+.sim-card {
+    @apply bg-white rounded-2xl border border-slate-100/80 shadow-sm;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.sim-card:hover {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06), 0 8px 20px rgba(0,0,0,0.03);
+}
+
+/* Simulation wrapper — matches setup page's contained card feel */
+.sim-wrapper {
+    @apply bg-white rounded-2xl border border-slate-100/80 relative overflow-hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.03);
+}
+
+/* Section headings inside cards */
+.sim-section-label {
+    @apply text-[10px] font-bold uppercase tracking-[0.12em] mb-2 flex items-center gap-2;
+}
+
+/* Phase progress bar */
+.phase-progress {
+    @apply w-full h-1.5 bg-slate-100 rounded-full overflow-hidden;
+}
+
+.phase-progress-fill {
+    @apply h-full bg-primary-red rounded-full transition-all duration-700 ease-out;
+}
+
+/* Phase step dots */
+.phase-dot {
+    @apply w-2 h-2 rounded-full transition-all duration-300;
+}
+.phase-dot.active {
+    @apply w-6 bg-primary-red;
+    border-radius: 999px;
+}
+.phase-dot.completed { @apply bg-primary-red; }
+.phase-dot.upcoming { @apply bg-slate-200; }
+
+/* Chat scrollbar */
+.custom-scrollbar::-webkit-scrollbar { width: 5px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.12); }
+
+/* Score ring animation */
+.score-ring {
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Score bar fills */
+.score-bar-fill {
+    @apply h-full rounded-full transition-all duration-1000 ease-out;
+}
+
+/* Sidebar panel */
+.sidebar-panel {
+    @apply p-4 rounded-xl border transition-all duration-200;
+}
+
+.sidebar-panel-white {
+    @apply p-4 rounded-xl border transition-all duration-200 bg-white border-slate-100/80;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+/* Expandable card for results */
+.result-expand-card {
+    @apply bg-white rounded-xl border border-slate-100/80 overflow-hidden transition-all duration-200;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.result-expand-card:hover {
+    @apply border-slate-200;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+/* Alpine cloak */
+[x-cloak] { display: none !important; }

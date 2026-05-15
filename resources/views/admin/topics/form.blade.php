@@ -48,8 +48,90 @@
                 </label>
             </div>
             
-            <div class="p-4 bg-orange-50 rounded-xl border border-orange-100">
-                <p class="text-xs font-bold text-orange-600">Note: Advanced settings like Stance Keywords and Opponent Arguments JSON editing will be available in the next update.</p>
+            <div class="space-y-6 pt-6 border-t border-slate-100">
+                <h3 class="text-lg font-black text-slate-800">Stance Keywords (Kata Kunci)</h3>
+                <p class="text-xs text-slate-500">Pisahkan dengan koma. Digunakan sistem untuk mendeteksi relevansi argumen user.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Pro Keywords</label>
+                        <textarea name="stance_keywords[pro]" rows="2" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red transition-all text-sm" placeholder="hak, merata, investasi, akses...">{{ isset($topic) && isset($topic->stance_keywords['pro']) ? implode(', ', $topic->stance_keywords['pro']) : '' }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Kontra Keywords</label>
+                        <textarea name="stance_keywords[kontra]" rows="2" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red transition-all text-sm" placeholder="anggaran, beban, pajak, kualitas...">{{ isset($topic) && isset($topic->stance_keywords['kontra']) ? implode(', ', $topic->stance_keywords['kontra']) : '' }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6 pt-6 border-t border-slate-100">
+                <h3 class="text-lg font-black text-slate-800">Opponent Arguments (Argumen Lawan)</h3>
+                <p class="text-xs text-slate-500">Jawaban otomatis bot di setiap fase debat.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- If User Pro -->
+                    <div class="space-y-4 p-4 rounded-xl border border-slate-100 bg-slate-50/50">
+                        <h4 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            Jika User PRO (Bot membalas sbg KONTRA)
+                        </h4>
+                        @for ($i = 1; $i <= 4; $i++)
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Fase {{ $i }}</label>
+                                <textarea name="opponent_arguments[pro][{{ $i }}]" rows="2" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red transition-all text-sm">{{ $topic->opponent_arguments['pro'][$i] ?? '' }}</textarea>
+                            </div>
+                        @endfor
+                    </div>
+
+                    <!-- If User Kontra -->
+                    <div class="space-y-4 p-4 rounded-xl border border-slate-100 bg-slate-50/50">
+                        <h4 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                            Jika User KONTRA (Bot membalas sbg PRO)
+                        </h4>
+                        @for ($i = 1; $i <= 4; $i++)
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Fase {{ $i }}</label>
+                                <textarea name="opponent_arguments[kontra][{{ $i }}]" rows="2" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red transition-all text-sm">{{ $topic->opponent_arguments['kontra'][$i] ?? '' }}</textarea>
+                            </div>
+                        @endfor
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6 pt-6 border-t border-slate-100">
+                <h3 class="text-lg font-black text-slate-800">Example Arguments (Contoh Jawaban)</h3>
+                <p class="text-xs text-slate-500">Disediakan sebagai referensi opsional bagi pengguna yang kebingungan ("Lihat Contoh" fitur).</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Example PRO -->
+                    <div class="space-y-4 p-4 rounded-xl border border-slate-100 bg-slate-50/50">
+                        <h4 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            Contoh Jawaban PRO
+                        </h4>
+                        @for ($i = 1; $i <= 5; $i++)
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Fase {{ $i }}</label>
+                                <textarea name="example_arguments[pro][{{ $i }}]" rows="2" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red transition-all text-sm">{{ $topic->example_arguments['pro'][$i] ?? '' }}</textarea>
+                            </div>
+                        @endfor
+                    </div>
+
+                    <!-- Example KONTRA -->
+                    <div class="space-y-4 p-4 rounded-xl border border-slate-100 bg-slate-50/50">
+                        <h4 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                            Contoh Jawaban KONTRA
+                        </h4>
+                        @for ($i = 1; $i <= 5; $i++)
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Fase {{ $i }}</label>
+                                <textarea name="example_arguments[kontra][{{ $i }}]" rows="2" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-primary-red/20 focus:border-primary-red transition-all text-sm">{{ $topic->example_arguments['kontra'][$i] ?? '' }}</textarea>
+                            </div>
+                        @endfor
+                    </div>
+                </div>
             </div>
         </div>
 
